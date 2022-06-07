@@ -112,6 +112,7 @@ func (p *Pdf) FromTemplate(template string, texts replaceMap, insert insertMap) 
 	modules = GetModules(content.Modules, mRoot)
 
 	rMap = GetReplaceMaps(texts)
+	_logger.Debugf("rMap: %v", rMap)
 	// 记录不正确key的值
 	if unknown, ok := rMap[-1]; ok {
 		for key, value := range unknown {
@@ -126,10 +127,11 @@ func (p *Pdf) FromTemplate(template string, texts replaceMap, insert insertMap) 
 
 	// 插入新页面
 	for moduleName, pages := range insert {
+		_logger.Debugf("pages: %v", pages)
 		var (
 			ok     bool
 			module []byte
-			p      = &Page{}
+			pg     *Page
 		)
 
 		if module, ok = modules[moduleName]; !ok {
@@ -138,13 +140,17 @@ func (p *Pdf) FromTemplate(template string, texts replaceMap, insert insertMap) 
 		}
 
 		for _, page := range pages {
-			err = json.Unmarshal(ReplaceTokenByte(module, rMap[page]), p)
+			pg = &Page{}
+			_logger.Debugf("rMap[%v]: %v", page, rMap[page])
+			err = json.Unmarshal(ReplaceTokenByte(module, rMap[page]), pg)
 			if err != nil {
-				_logger.Warnf("Could not parse this module which named %s and will be inserted into page %d.", moduleName, page)
+				_logger.Warnf("Could not parse this module which named %s and will be inserted into page %d. Because %s", moduleName, page, err.Error())
 				continue
 			}
 
-			content.Pages = InsertIntoPages(content.Pages, p, page)
+			content.Pages = InsertIntoPages(content.Pages, pg, page)
+			_logger.Debugf("pages: %v", content.Pages)
+			pg = nil
 		}
 	}
 
