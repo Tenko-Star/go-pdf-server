@@ -110,7 +110,7 @@ func propFontFamily(t *Text) string {
 		props = t.Props
 	)
 
-	if family, ok := props["font"]; ok {
+	if family, ok := props["family"]; ok {
 		return family.(string)
 	} else {
 		return _config.Default.Font
