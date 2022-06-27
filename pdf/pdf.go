@@ -121,8 +121,8 @@ func (p *Pdf) FromTemplate(template string, texts replaceMap, insert insertMap) 
 	}
 
 	// 替换全局的部分
-	for index, page := range content.Pages {
-		ReplacePageValues(page, rMap[index])
+	for _, page := range content.Pages {
+		ReplacePageValues(page, rMap[0])
 	}
 
 	// 插入新页面
