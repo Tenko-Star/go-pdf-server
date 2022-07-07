@@ -20,6 +20,9 @@ func ReplaceTokenString(data string, m replaceMap) string {
 
 	for key, value := range m {
 		key = "{" + key + "}"
+		value = strings.ReplaceAll(value, "\r", "")
+		value = strings.ReplaceAll(value, "\n", "")
+		value = strings.ReplaceAll(value, "\t", "")
 		data = strings.ReplaceAll(data, key, value)
 	}
 
