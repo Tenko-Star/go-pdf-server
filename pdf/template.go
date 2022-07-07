@@ -26,6 +26,8 @@ func ReplaceTokenString(data string, m replaceMap) string {
 		data = strings.ReplaceAll(data, key, value)
 	}
 
+	_logger.Debugf("after replace: %v", data)
+
 	return data
 }
 
